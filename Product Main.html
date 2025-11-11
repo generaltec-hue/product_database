@@ -1,0 +1,472 @@
+l
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeneralTec Product Database - Secure Access</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-top: 15px;
+            padding: 10px;
+            background: #fdf2f2;
+            border: 1px solid #fbb;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .user-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+
+        .app-content {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-welcome {
+            font-size: 1.1rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .search-section {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 25px;
+            font-size: 16px;
+        }
+
+        .product-grid {
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .product-card {
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-model {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .product-category {
+            background: #3498db;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #7f8c8d;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div class="container" id="loginSection">
+        <div class="login-box">
+            <div class="logo">🔒 GeneralTec</div>
+            <h1>Product Database</h1>
+            <p class="subtitle">Secure access to product information</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">User ID:</label>
+                    <input type="text" id="username" placeholder="Enter your user ID" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="login-btn">Login to Database</button>
+                
+                <div class="error-message" id="errorMessage">
+                    Invalid user ID or password. Please try again.
+                </div>
+            </form>
+
+            <div class="user-info">
+                <strong>Demo Users:</strong><br>
+                • admin / admin123 (Full Access)<br>
+                • sales1 / sales123<br>
+                • sales2 / sales123<br>
+                • tech1 / tech123<br>
+                • tech2 / tech123<br>
+                • manager / manager123
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application Content -->
+    <div class="container" id="appSection">
+        <div class="app-content">
+            <div class="app-header">
+                <div>
+                    <div class="user-welcome">Welcome, <span id="userDisplayName"></span>!</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">GeneralTec Product Database</div>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="search-section">
+                <input type="text" id="searchInput" placeholder="Search products by model, category, or specifications...">
+            </div>
+
+            <div class="product-grid" id="productGrid">
+                <div class="loading">Loading product database...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // User Database with 6 users
+        const users = {
+            'admin': {
+                password: 'admin123',
+                name: 'Administrator',
+                role: 'Admin',
+                access: 'full'
+            },
+            'sales1': {
+                password: 'sales123',
+                name: 'Sales User 1',
+                role: 'Sales',
+                access: 'view'
+            },
+            'sales2': {
+                password: 'sales123',
+                name: 'Sales User 2',
+                role: 'Sales',
+                access: 'view'
+            },
+            'tech1': {
+                password: 'tech123',
+                name: 'Technical User 1',
+                role: 'Technical',
+                access: 'technical'
+            },
+            'tech2': {
+                password: 'tech123',
+                name: 'Technical User 2',
+                role: 'Technical',
+                access: 'technical'
+            },
+            'manager': {
+                password: 'manager123',
+                name: 'Manager',
+                role: 'Management',
+                access: 'full'
+            }
+        };
+
+        // Product Database
+        const products = [
+            {
+                id: 'GT-TR-100',
+                model: '100kVA Distribution Transformer',
+                category: 'transformers',
+                specifications: {
+                    capacity: '100 kVA',
+                    input_voltage: '11 kV',
+                    output_voltage: '433 V',
+                    weight: '850 kg',
+                    dimensions: '1200x800x1400 mm'
+                },
+                features: ['Low losses', 'High efficiency', 'Durable construction']
+            },
+            {
+                id: 'GT-TR-500',
+                model: '500kVA Power Transformer',
+                category: 'transformers',
+                specifications: {
+                    capacity: '500 kVA',
+                    input_voltage: '33 kV',
+                    output_voltage: '11 kV',
+                    weight: '2500 kg',
+                    dimensions: '2500x1800x2200 mm'
+                },
+                features: ['Oil cooled', 'High reliability', 'ISO certified']
+            },
+            {
+                id: 'GT-ST-10K',
+                model: '10kVA Servo Stabilizer',
+                category: 'stabilizers',
+                specifications: {
+                    capacity: '10 kVA',
+                    input_voltage_range: '300V - 480V',
+                    output_voltage: '415V ±1%',
+                    weight: '85 kg',
+                    dimensions: '500x400x600 mm'
+                },
+                features: ['Digital display', 'Overload protection', 'Time delay']
+            },
+            {
+                id: 'GT-UPS-5K',
+                model: '5kVA Online UPS',
+                category: 'ups',
+                specifications: {
+                    capacity: '5 kVA',
+                    input_voltage: '170-280V',
+                    battery_backup: '30-45 mins',
+                    weight: '65 kg',
+                    dimensions: '400x600x800 mm'
+                },
+                features: ['Pure sine wave', 'LCD display', 'Automatic voltage regulation']
+            },
+            {
+                id: 'GT-SL-3KW',
+                model: '3kW Solar Inverter',
+                category: 'solar',
+                specifications: {
+                    capacity: '3 kW',
+                    mppt_voltage_range: '120-450V',
+                    efficiency: '97.5%',
+                    weight: '25 kg',
+                    dimensions: '400x500x200 mm'
+                },
+                features: ['MPPT technology', 'Grid tie', 'Wi-Fi monitoring']
+            }
+        ];
+
+        let currentUser = null;
+
+        // Login Form Handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Check credentials
+            if (users[username] && users[username].password === password) {
+                currentUser = users[username];
+                loginSuccess();
+            } else {
+                errorMessage.style.display = 'block';
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000);
+            }
+        });
+
+        function loginSuccess() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('appSection').style.display = 'block';
+            document.getElementById('userDisplayName').textContent = currentUser.name;
+            
+            // Load products
+            displayProducts(products);
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('appSection').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        function displayProducts(productsArray) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+
+            productsArray.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="product-category">${product.category.toUpperCase()}</div>
+                    <div class="product-model">${product.model}</div>
+                    <div style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 10px;">${product.id}</div>
+                    <div style="font-size: 0.85rem;">
+                        <strong>Capacity:</strong> ${product.specifications.capacity}<br>
+                        <strong>Weight:</strong> ${product.specifications.weight}<br>
+                        <strong>Dimensions:</strong> ${product.specifications.dimensions}
+                    </div>
+                    <div style="margin-top: 10px; font-size: 0.8rem; color: #3498db;">
+                        ${product.features.slice(0, 2).join(' • ')}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            if (searchTerm === '') {
+                displayProducts(products);
+                return;
+            }
+
+            const filteredProducts = products.filter(product => 
+                product.model.toLowerCase().includes(searchTerm) ||
+                product.id.toLowerCase().includes(searchTerm) ||
+                product.category.toLowerCase().includes(searchTerm) ||
+                JSON.stringify(product.specifications).toLowerCase().includes(searchTerm) ||
+                product.features.some(feature => feature.toLowerCase().includes(searchTerm))
+            );
+
+            displayProducts(filteredProducts);
+        });
+
+        // Enter key to submit login form
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>
